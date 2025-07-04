@@ -97,6 +97,7 @@ class RLHFDataset(Dataset):
         self.tokenizer = tokenizer
         self.processor = processor
         self.config = config
+        self.group_ids = None
 
         self.cache_dir = os.path.expanduser(config.get("cache_dir", "~/.cache/verl/rlhf"))
         self.prompt_key = config.get("prompt_key", "prompt")
@@ -172,6 +173,9 @@ class RLHFDataset(Dataset):
             )
 
             print(f"filter dataset len: {len(self.dataframe)}")
+
+            if 'hint' in self.dataframe.column_names:
+                self.group_ids = [len(h) if h is not None else 0 for h in self.dataframe['hint']]
 
     def resume_dataset_state(self):
         self.serialize_dataset = not hasattr(self, "original_data_files")

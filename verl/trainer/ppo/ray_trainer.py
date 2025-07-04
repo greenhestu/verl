@@ -329,6 +329,7 @@ class RayPPOTrainer:
         self.config = config
         self.reward_fn = reward_fn
         self.val_reward_fn = val_reward_fn
+        self.group_ids = train_dataset.group_ids
 
         self.hybrid_engine = config.actor_rollout_ref.hybrid_engine
         assert self.hybrid_engine, "Currently, only support hybrid engine"
@@ -1136,6 +1137,7 @@ class RayPPOTrainer:
                     with marked_timer("gen", timing_raw, color="red"):
                         if not self.async_rollout_mode:
                             gen_batch_output = self.actor_rollout_wg.generate_sequences(gen_batch)
+                            import pdb; pdb.set_trace()
                         else:
                             # vllm should set async_rollout_mode to enable async rollout
                             # sglang turns on async_rollout_mode by default
